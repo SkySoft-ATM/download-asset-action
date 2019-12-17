@@ -1,0 +1,27 @@
+name: download-asset-action
+description: Download specific asset, part of a release
+inputs:
+  owner:  
+    description: Repository owner
+    required: true
+  repo:  
+    description: Repository name hosting the identified asset
+    required: true
+  tag:  
+    description: Release tag the asset refers to
+    default: latest
+  dir-path:  
+    description: Path (relative or absolute) where to download the asset
+    default: ./
+  asset-name:  
+    description: Asset name to download
+    required: true
+  token:  
+    description: The GitHub token used to authenticate
+    required: true
+outputs:
+  result: 
+    description: The return value of the script, stringified with `JSON.stringify`
+runs:
+  using: node12
+  main: index.js

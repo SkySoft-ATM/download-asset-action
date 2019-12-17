@@ -6,23 +6,26 @@ using the GitHub API.
 In order to use this action, a set of elements need to be provided. 
 
 **Note** This action is still release candidat and the API may change in
-*future versions. 🙂
+future versions. 🙂
 
 ## Examples
 
 ### Download a archive file, part of a Github Release
 
 ```yaml
-on:
-  issues: {types: opened}
+on: [push]
 
 jobs:
-  comment:
+  retrieve:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-asset-action@master
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
-          
+          owner: "SkySoft-ATM"
+          repo: "my-repo"
+          tag: "v1.0"
+          asset-name: "asset.zip"
+          dir: "./"          
 ```
 

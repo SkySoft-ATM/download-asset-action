@@ -1,7 +1,6 @@
 const core = require('@actions/core')
 const { GitHub, context } = require('@actions/github')
 
-process.on('unhandledRejection', handleError)
 main().catch(handleError)
 
 async function main() {

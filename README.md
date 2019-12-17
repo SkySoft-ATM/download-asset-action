@@ -19,7 +19,7 @@ jobs:
   retrieve:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-asset-action@master
+      - uses: SkySoft-ATM/download-asset-action@master
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           owner: "SkySoft-ATM"

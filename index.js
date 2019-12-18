@@ -11,7 +11,6 @@ async function getAsset(github, owner, repo, tag, assetName) {
     tag
   });
 
-  console.log(release)
   const assets = await github.repos.listAssetsForRelease({
     owner,
     repo,
@@ -42,8 +41,6 @@ async function run() {
     const github = new GitHub(token, opts);
 
     const asset = await getAsset(github, owner, repo, tag, assetName);
-    core.info(`Asset: ${asset}`);
-
     const filePath = path.resolve(directory, asset.name);
 
     const result = await download(token, owner, repo, asset, filePath);

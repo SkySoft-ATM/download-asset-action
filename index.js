@@ -4,8 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const fetch = require('node-fetch');
 
-async function getAsset(github, owner, repo, tag, assetName) {
-  const release = await github.repos.getReleaseByTag({
+function getAsset(github, owner, repo, tag, assetName) {
+  const release = github.repos.getReleaseByTag({
     owner,
     repo,
     tag
@@ -13,7 +13,7 @@ async function getAsset(github, owner, repo, tag, assetName) {
 
   core.info(`Release: ${release}`);
 
-  const assets = await github.repos.listAssetsForRelease({
+  const assets = github.repos.listAssetsForRelease({
     owner,
     repo,
     release_id: release.data.id
@@ -47,14 +47,15 @@ async function run() {
 
     const filePath = path.resolve(directory, asset.name);
 
-    const result = await download(token, owner, repo, asset, filePath);
+    const result = download(token, owner, repo, asset, filePath);
     console.log(`::set-output name=file::${filePath}`);
 
   } catch (error) {
     core.setFailed(error.message);
   }
 }
-async function download(token, owner, repo, asset, filePath) {
+
+function download(token, owner, repo, asset, filePath) {
 
   const options = {
     method: 'GET',

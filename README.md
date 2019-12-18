@@ -1,5 +1,8 @@
 # download-asset-action
 
+[![Actions Status](https://github.com/SkySoft-ATM/download-asset-action/workflows/main/badge.svg)](https://github.com/SkySoft-ATM/download-asset-action/actions)
+
+
 This action makes it easy to quickly download a github asset in your workflow 
 using the GitHub API.
 

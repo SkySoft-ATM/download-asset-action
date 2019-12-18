@@ -8,7 +8,7 @@ using the GitHub API.
 
 In order to use this action, a set of elements need to be provided. 
 
-**Note** This action is still release candidat and the API may change in
+**Note** This action is still "Release Candidate" and the API may change in
 future versions. 🙂
 
 ## Examples

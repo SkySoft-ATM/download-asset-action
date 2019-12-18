@@ -4,16 +4,15 @@ const path = require('path');
 const fs = require('fs');
 const fetch = require('node-fetch');
 
-function getAsset(github, owner, repo, tag, assetName) {
-  const release = github.repos.getReleaseByTag({
+async function getAsset(github, owner, repo, tag, assetName) {
+  const release = await github.repos.getReleaseByTag({
     owner,
     repo,
     tag
   });
 
-  core.info(`Release: ${release}`);
-
-  const assets = github.repos.listAssetsForRelease({
+  console.log(release)
+  const assets = await github.repos.listAssetsForRelease({
     owner,
     repo,
     release_id: release.data.id
@@ -42,12 +41,12 @@ async function run() {
 
     const github = new GitHub(token, opts);
 
-    const asset = getAsset(github, owner, repo, tag, assetName);
+    const asset = await getAsset(github, owner, repo, tag, assetName);
     core.info(`Asset: ${asset}`);
 
     const filePath = path.resolve(directory, asset.name);
 
-    const result = download(token, owner, repo, asset, filePath);
+    const result = await download(token, owner, repo, asset, filePath);
     console.log(`::set-output name=file::${filePath}`);
 
   } catch (error) {
@@ -55,7 +54,7 @@ async function run() {
   }
 }
 
-function download(token, owner, repo, asset, filePath) {
+async function download(token, owner, repo, asset, filePath) {
 
   const options = {
     method: 'GET',
@@ -73,7 +72,7 @@ function download(token, owner, repo, asset, filePath) {
     });
 }
 
-function checkStatus(res){
+function checkStatus(res) {
   if (res.ok) {
     return res;
   } else {

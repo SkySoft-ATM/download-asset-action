@@ -3,7 +3,7 @@ name: snapshot
 on: [push]
 
 jobs:
-  retrieve:
+  download-and-unzip:
     runs-on: ubuntu-latest
     steps:
       - name: Download archive

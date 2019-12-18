@@ -20,4 +20,4 @@ jobs:
         run: sudo apt-get install unzip
       
       - name: Unzip archive
-        run: unzip ./grpc-visual2015.zip      
+        run: unzip ./grpc-visual2015.zip

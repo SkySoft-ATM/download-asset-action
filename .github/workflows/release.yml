@@ -4,22 +4,23 @@ on:
   push:
     tags:
     - 'v*'
-    jobs:
-        download-and-unzip:
-          runs-on: ubuntu-latest
-          steps:
-            - name: Download archive
-              uses: SkySoft-ATM/download-asset-action@master
-              with:
-                github-token: ${{secrets.BOT_TOKEN}}
-                owner: "SkySoft-ATM"
-                repo: "gRPC-VC2015"
-                tag: "V1.0"
-                asset-name: "grpc-visual2015.zip"
-                dir: "./"  
-            
-            - name: Install unzip
-              run: sudo apt-get install unzip
-            
-            - name: Unzip archive
-              run: unzip ./grpc-visual2015.zip 
+    
+jobs:
+  download-and-unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download archive
+        uses: SkySoft-ATM/download-asset-action@master
+        with:
+          github-token: ${{secrets.BOT_TOKEN}}
+          owner: "SkySoft-ATM"
+          repo: "gRPC-VC2015"
+          tag: "V1.0"
+          asset-name: "grpc-visual2015.zip"
+          dir: "./"  
+      
+      - name: Install unzip
+        run: sudo apt-get install unzip
+      
+      - name: Unzip archive
+        run: unzip ./grpc-visual2015.zip

@@ -19,8 +19,5 @@ jobs:
           asset-name: "grpc-visual2015.zip"
           dir: "./"  
       
-      - name: Install unzip
-        run: sudo apt-get install unzip
-      
       - name: Unzip archive
         run: unzip ${{ steps.grpc-asset.outputs.file }}

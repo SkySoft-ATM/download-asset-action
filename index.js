@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const fetch = require('node-fetch');
 
-function getAsset(github, owner, repo, tag, assetName) {
+async function getAsset(github, owner, repo, tag, assetName) {
   const release = await github.repos.getReleaseByTag({
     owner,
     repo,

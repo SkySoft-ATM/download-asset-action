@@ -1,67 +1,83 @@
-const core = require('@actions/core')
-const { GitHub, context } = require('@actions/github')
+const core = require('@actions/core');
+const { GitHub, context } = require('@actions/github');
+const path = require('path');
+const fs = require('fs');
+const fetch = require('node-fetch');
 
-main().catch(handleError)
+function getAsset(github, owner, repo, tag, assetName) {
+  const release = await github.repos.getReleaseByTag({
+    owner,
+    repo,
+    tag
+  });
 
-async function main() {
-    const token = core.getInput('github-token', { required: true })
-    const debug = core.getInput('debug')
-    const owner = core.getInput('owner', { required: true })
-    const repo = core.getInput('repo', { required: true })
-    const tag = core.getInput('tag')
-    const directory = core.getInput('dir-path')
-    const assetName = core.getInput('asset-name')
+  core.info(`Release: ${release}`);
+
+  const assets = await github.repos.listAssetsForRelease({
+    owner,
+    repo,
+    release_id: release.data.id
+  });
+
+  return assets.data.filter(asset => asset.name == assetName)[0];
+}
+
+async function run() {
+  try {
+    const token = core.getInput('github-token', { required: true });
+    const debug = core.getInput('debug');
+    const owner = core.getInput('owner', { required: true });
+    const repo = core.getInput('repo', { required: true });
+    const tag = core.getInput('tag');
+    const directory = core.getInput('dir-path');
+    const assetName = core.getInput('asset-name');
     const opts = {}
-    if (debug === 'true') opts.log = console
-    const github = new GitHub(token, opts)
-    const result = await process(github, token, owner, repo, tag, directory, assetName)
-    core.setOutput('result', JSON.stringify(result))
+    if (debug === 'true') opts.log = console;
+
+    core.info(`Owner: ${owner}`);
+    core.info(`Repo: ${repo}`);
+    core.info(`Tag: ${tag}`);
+    core.info(`Directory: ${directory}`);
+    core.info(`Asset Name: ${assetName}`);
+
+    const github = new GitHub(token, opts);
+
+    const asset = getAsset(github, owner, repo, tag, assetName);
+    core.info(`Asset: ${asset}`);
+
+    const filePath = path.resolve(directory, asset.name);
+
+    const result = await download(token, owner, repo, asset, filePath);
+    console.log(`::set-output name=file::${filePath}`);
+
+  } catch (error) {
+    core.setFailed(error.message);
+  }
 }
+async function download(token, owner, repo, asset, filePath) {
 
-async function process(github, token, owner, repo, tag, directory, assetName) {
-    const fs = require('fs');
-    const path = require('path');
-    const Octokit = require('@octokit/rest')
-
-    const release = await github.repos.getReleaseByTag({
-        owner,
-        repo,
-        tag
-    });
-
-    const assets = await github.repos.listAssetsForRelease({
-        owner,
-        repo,
-        release_id: release.data.id
-    });
-
-    const asset = assets.data.filter(asset => asset.name == assetName)[0];
-    const zipPath = path.resolve(directory, asset.name);
-
-    const octokit = new Octokit()
-    const options = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/octet-stream'
-      }
+  const options = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/octet-stream'
     }
-    
-    const fetch = require('node-fetch');
-    const url = `https://api.github.com/repos/${owner}/${repo}/releases/assets/${asset.id}?access_token=${token}`
+  };
 
-    fetch(url, options)
-      .then(res => {
-        const dest = fs.createWriteStream(zipPath);
-        res.body.pipe(dest);
-      });
+  const url = `https://api.github.com/repos/${owner}/${repo}/releases/assets/${asset.id}?access_token=${token}`;
+  fetch(url, options)
+    .then(checkStatus)
+    .then(res => {
+      const dest = fs.createWriteStream(filePath);
+      res.body.pipe(dest);
+    });
 }
 
-function handleError(err) {
-    console.error(err)
-    core.setFailed(err.message)
+function checkStatus(res){
+  if (res.ok) {
+    return res;
+  } else {
+    throw new Error(res.statusText);
+  }
 }
 
-
-
-
-
+run();

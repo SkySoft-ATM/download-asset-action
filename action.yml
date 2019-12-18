@@ -1,5 +1,8 @@
 name: download-asset-action
 description: Download specific asset, part of a release
+branding:
+  icon: 'tag'
+  color: 'gray-dark'
 inputs:
   owner:  
     description: Repository owner
@@ -20,8 +23,8 @@ inputs:
     description: The GitHub token used to authenticate
     required: true
 outputs:
-  result: 
-    description: The return value of the script, stringified with `JSON.stringify`
+  file: 
+    description: The absolute file name corresponding to the asset downloaded
 runs:
   using: node12
   main: index.js

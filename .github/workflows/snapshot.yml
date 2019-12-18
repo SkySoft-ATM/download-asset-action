@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download archive
+        id: grpc-asset
         uses: SkySoft-ATM/download-asset-action@master
         with:
           github-token: ${{secrets.BOT_TOKEN}}
@@ -16,8 +17,14 @@ jobs:
           asset-name: "grpc-visual2015.zip"
           dir: "./"  
       
+      - name: Print Result
+        run: echo $file
+        env:
+          file: ${{ steps.grpc-asset.outputs.file }}
+  
       - name: Install unzip
         run: sudo apt-get install unzip
       
       - name: Unzip archive
         run: unzip ./grpc-visual2015.zip
+      

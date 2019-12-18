@@ -13,7 +13,7 @@ inputs:
   tag:  
     description: Release tag the asset refers to
     default: latest
-  dir-path:  
+  dir:  
     description: Path (relative or absolute) where to download the asset
     default: ./
   asset-name:  

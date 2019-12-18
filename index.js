@@ -27,7 +27,7 @@ async function run() {
     const owner = core.getInput('owner', { required: true });
     const repo = core.getInput('repo', { required: true });
     const tag = core.getInput('tag');
-    const directory = core.getInput('dir-path');
+    const directory = core.getInput('dir');
     const assetName = core.getInput('asset-name');
     const opts = {}
     if (debug === 'true') opts.log = console;
